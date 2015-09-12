@@ -56,7 +56,7 @@ func MailboxAjaxHandler(resp http.ResponseWriter, req *http.Request) {
 	payload := CreateMailboxPayload()
 
 	var err error
-	payload.Mailbox, err = GetDomain(vars["username"])
+	payload.Mailbox, err = GetMailbox(vars["username"])
 	if err != nil{
 		fmt.Println(err)
 		payload.Error = "DB Error: " + err.Error()

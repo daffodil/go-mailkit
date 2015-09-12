@@ -19,7 +19,7 @@ type MailboxesPayload struct {
 }
 
 
-func NewMailboxesPayload() MailboxesPayload {
+func CreateMailboxesPayload() MailboxesPayload {
 	t := MailboxesPayload{}
 	t.Success = true
 	t.Mailboxes = make([]Mailbox, 0)
@@ -27,23 +27,22 @@ func NewMailboxesPayload() MailboxesPayload {
 }
 
 
-func GetMailboxes() ([]Domain, error) {
+func GetMailboxes(domain string) ([]Mailbox, error) {
 	var rows []Mailbox
 	var err error
-	err = Db.Select(&rows, "SELECT username, password, name, maildir, quota, local_part, domain, created, modified, active FROM domain order by username asc ")
+	err = Db.Select(&rows, "SELECT username, password, name, maildir, quota, local_part, domain, created, modified, active FROM mailboxes where domain = ? order by username asc ", domain)
 	return rows, err
 }
 
 // Handles /ajax/domain/<domain>/mailboxes
 func MailboxesAjaxHandler(resp http.ResponseWriter, req *http.Request) {
 
-	//_ := mux.Vars(req)
-	// TODO auth
+	vars := mux.Vars(req)
 
-	payload := NewDomainsPayload()
+	payload := CreateMailboxesPayload()
 
 	var err error
-	payload.Domains, err = GetMailboxes()
+	payload.Mailboxes, err = GetMailboxes( vars["domain"] )
 	if err != nil{
 		fmt.Println(err)
 		payload.Error = "DB Error: " + err.Error()
