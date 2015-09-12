@@ -1,6 +1,6 @@
 
 
-package mailadmin
+package postfixadmin
 
 import(
 
@@ -36,9 +36,7 @@ func GetDomains() ([]Domain, error) {
 
 // Handles /ajax/domains
 func DomainsAjaxHandler(resp http.ResponseWriter, req *http.Request) {
-
-	//_ := mux.Vars(req)
-	// TODO auth
+	fmt.Println("DomainsAjaxHandler")
 
 	payload := NewDomainsPayload()
 

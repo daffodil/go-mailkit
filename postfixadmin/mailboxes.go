@@ -1,6 +1,6 @@
 
 
-package mailadmin
+package postfixadmin
 
 import(
 
@@ -30,13 +30,13 @@ func CreateMailboxesPayload() MailboxesPayload {
 func GetMailboxes(domain string) ([]Mailbox, error) {
 	var rows []Mailbox
 	var err error
-	err = Db.Select(&rows, "SELECT username, password, name, maildir, quota, local_part, domain, created, modified, active FROM mailboxes where domain = ? order by username asc ", domain)
+	err = Db.Select(&rows, "SELECT username, password, name, maildir, quota, local_part, domain, created, modified, active FROM mailbox where domain = ? order by username asc ", domain)
 	return rows, err
 }
 
 // Handles /ajax/domain/<domain>/mailboxes
 func MailboxesAjaxHandler(resp http.ResponseWriter, req *http.Request) {
-
+	fmt.Println("MailboxesAjaxHandler")
 	vars := mux.Vars(req)
 
 	payload := CreateMailboxesPayload()

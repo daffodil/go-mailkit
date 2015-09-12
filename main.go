@@ -12,13 +12,12 @@ import (
 
 	"gopkg.in/yaml.v2"
 	"github.com/gorilla/mux"
-	"github.com/jmoiron/sqlx"
-	//"database/sql"
+	//"github.com/jmoiron/sqlx"
+	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 
-	//"github.com/daffodil/go-mail2ajax/mail2ajax"
-	//"github.com/daffodil/go-mail2ajax/mailbox"
-	"github.com/daffodil/go-mailkit/mailadmin"
+
+	"github.com/daffodil/go-mailkit/postfixadmin"
 
 )
 
@@ -36,7 +35,7 @@ type Config struct {
 	IMAPAddress string `toml:"imap_adddress" json:"imap_adddress"`
 	SMTPLogin string `toml:"smtp_login" json:"smtp_login"`
 
-	Tls *tls.Config
+	//Tls *tls.Config
 }
 
 
@@ -59,15 +58,16 @@ func main(){
 	}
 
 	// Setup TLS config
-	config.Tls = new(tls.Config)
-	config.Tls.ServerName = config.IMAPAddress
-	config.Tls.InsecureSkipVerify = true
+	//config.Tls = new(tls.Config)
+	//config.Tls.ServerName = config.IMAPAddress
+	//config.Tls.InsecureSkipVerify = true
+
 	fmt.Printf("Config: %v\n", config)
 
 	// Create Database connection
 	var Db *sqlx.DB
 	var err_db error
-	Db, err_db = sqlx.Connect(config.DBEngine, config.DBConnect)
+	Db, err_db = sql.Open(config.DBEngine, config.DBConnect)
 	if err_db != nil {
 		fmt.Printf("Db Login Failed: ", err_db,"=", config.DBEngine)
 		os.Exit(1)
@@ -81,7 +81,7 @@ func main(){
 
 	// Setup router and config mods
 	router := mux.NewRouter()
-	mailadmin.Setup(Db, router)
+	postfixadmin.Setup(Db, router)
 	//mailbox.Configure(config, r)
 
 

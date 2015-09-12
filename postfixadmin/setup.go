@@ -1,6 +1,6 @@
 
 
-package mailadmin
+package postfixadmin
 
 import(
 

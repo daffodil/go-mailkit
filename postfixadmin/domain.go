@@ -1,6 +1,6 @@
 
 
-package mailadmin
+package postfixadmin
 
 import(
 
@@ -53,7 +53,7 @@ func GetDomain(domain_name string) (Domain, error) {
 
 // Handles /ajax/domain/<example.com>
 func DomainAjaxHandler(resp http.ResponseWriter, req *http.Request) {
-
+	fmt.Println("DomainAjaxHandler")
 	vars := mux.Vars(req)
 
 	payload := CreateDomainPayload()
