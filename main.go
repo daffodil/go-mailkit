@@ -77,13 +77,12 @@ func main(){
 		fmt.Printf("Db Ping Failed: ", err_ping,"=", config.DBEngine)
 		os.Exit(1)
 	}
-	fmt.Printf("Db  ", Db.Driver.Engine)
 	defer Db.Close()
 
 	// Setup router and config mods
 	router := mux.NewRouter()
 	postfixadmin.SetupDb(config.DBEngine, Db)
-	postfixadmin.SetupRoutes(Db)
+	postfixadmin.SetupRoutes(router)
 	//mailbox.Configure(config, r)
 
 
