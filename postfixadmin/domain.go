@@ -45,7 +45,7 @@ func CreateDomainPayload() DomainPayload {
 
 func GetDomain(domain_name string) (Domain, error) {
 	var dom Domain
-	row := Dbx.QueryRow("SELECT domain, description, aliases, mailboxes, maxquota, quota, transport, backupmx, created, modified, active FROM domain where domain = ? ", domain_name)
+	row := Dbo.QueryRow("SELECT domain, description, aliases, mailboxes, maxquota, quota, transport, backupmx, created, modified, active FROM domain where domain = ? ", domain_name)
 	err := row.Scan(&dom.Domain, &dom.Description, &dom.Aliases, &dom.Mailboxes, &dom.MaxQuota, &dom.Quota, &dom.Transport, &dom.BackupMx, &dom.Created, &dom.Modified, &dom.Active)
 	return dom, err
 }
