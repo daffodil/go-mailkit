@@ -30,7 +30,7 @@ func NewDomainsPayload() DomainsPayload {
 func GetDomains() ([]Domain, error) {
 	var rows []Domain
 	var err error
-	err = Db.Select(&rows, "SELECT domain, description, aliases, mailboxes, maxquota, quota, transport, backupmx, created, modified, active FROM domain order by domain asc ")
+	err = Dbx.Select(&rows, "SELECT domain, description, aliases, mailboxes, maxquota, quota, transport, backupmx, created, modified, active FROM domain order by domain asc ")
 	return rows, err
 }
 

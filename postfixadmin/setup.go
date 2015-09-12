@@ -3,16 +3,24 @@
 package postfixadmin
 
 import(
+	"database/sql"
 
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
 )
 
 
-var Db *sqlx.DB
+var Dbx *sqlx.DB
 
-func Setup( db *sqlx.DB, router *mux.Router){
-	Db = db
+func SetupDb( engine string, db *sql.DB){
+
+	// This is bummer cos I want to use db.Driver.Name or alike instead of a new function var
+	Dbx = sqlx.NewDb(db, engine)
+
+}
+
+
+func SetupRoutes( router *mux.Router){
 
 	router.HandleFunc("/ajax/domains", DomainsAjaxHandler)
 	router.HandleFunc("/ajax/domain/{domain}", DomainAjaxHandler)

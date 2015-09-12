@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"io/ioutil"
 	"os"
-	"crypto/tls"
+	//"crypto/tls"
 
 	"gopkg.in/yaml.v2"
 	"github.com/gorilla/mux"
@@ -65,7 +65,7 @@ func main(){
 	fmt.Printf("Config: %v\n", config)
 
 	// Create Database connection
-	var Db *sqlx.DB
+	var Db *sql.DB
 	var err_db error
 	Db, err_db = sql.Open(config.DBEngine, config.DBConnect)
 	if err_db != nil {
@@ -77,11 +77,13 @@ func main(){
 		fmt.Printf("Db Ping Failed: ", err_ping,"=", config.DBEngine)
 		os.Exit(1)
 	}
+	fmt.Printf("Db  ", Db.Driver.Engine)
 	defer Db.Close()
 
 	// Setup router and config mods
 	router := mux.NewRouter()
-	postfixadmin.Setup(Db, router)
+	postfixadmin.SetupDb(config.DBEngine, Db)
+	postfixadmin.SetupRoutes(Db)
 	//mailbox.Configure(config, r)
 
 

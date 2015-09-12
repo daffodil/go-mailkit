@@ -42,7 +42,7 @@ func CreateMailboxPayload() MailboxPayload {
 
 func GetMailbox(username string) (Mailbox, error) {
 	var dom Mailbox
-	row := Db.QueryRow("SELECT username, password, name, maildir, quota, localpart, domain, created, modified, active FROM mailbox where username = ? ", username)
+	row := Dbx.QueryRow("SELECT username, password, name, maildir, quota, localpart, domain, created, modified, active FROM mailbox where username = ? ", username)
 	err := row.Scan(&dom.Username, &dom.Password, &dom.Name, &dom.Maildir, &dom.Quota, &dom.Local_Part, &dom.Domain, &dom.Created, &dom.Modified, &dom.Active)
 	return dom, err
 }
