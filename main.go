@@ -18,7 +18,7 @@ import (
 
 	//"github.com/daffodil/go-mail2ajax/mail2ajax"
 	//"github.com/daffodil/go-mail2ajax/mailbox"
-	//"github.com/daffodil/go-mail2ajax/mailadmin"
+	"github.com/daffodil/go-mailkit/mailadmin"
 
 )
 
@@ -72,15 +72,21 @@ func main(){
 		fmt.Printf("Db Login Failed: ", err_db,"=", config.DBEngine)
 		os.Exit(1)
 	}
+	err_ping := Db.Ping()
+	if err_ping != nil {
+		fmt.Printf("Db Ping Failed: ", err_ping,"=", config.DBEngine)
+		os.Exit(1)
+	}
 	defer Db.Close()
 
-	r := mux.NewRouter()
-	//mailadmin.Configure(config, r)
+	// Setup router and config mods
+	router := mux.NewRouter()
+	mailadmin.Setup(Db, router)
 	//mailbox.Configure(config, r)
 
 
 	fmt.Println("Serving on " + config.HTTPListen)
-	http.Handle("/", r)
+	http.Handle("/", router)
 	http.ListenAndServe( config.HTTPListen, nil)
 
 }
