@@ -34,7 +34,7 @@ type DomainPayload struct {
 
 
 
-func NewDomainPayload() DomainPayload {
+func CreateDomainPayload() DomainPayload {
 	payload := DomainPayload{}
 	payload.Success = true
 	payload.Domain = Domain{}
@@ -56,7 +56,7 @@ func DomainAjaxHandler(resp http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
 
-	payload := NewDomainPayload()
+	payload := CreateDomainPayload()
 
 	var err error
 	payload.Domain, err = GetDomain(vars["domain"])
