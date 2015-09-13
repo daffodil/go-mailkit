@@ -34,9 +34,9 @@ func SetupRoutes( router *mux.Router){
 	router.HandleFunc("/ajax/domains", DomainsAjaxHandler)
 	router.HandleFunc("/ajax/domain/{domain}", DomainAjaxHandler)
 
-	//router.HandleFunc("/ajax/domain/{domain}/mailboxes", MailboxesAjaxHandler)
+	router.HandleFunc("/ajax/domain/{domain}/mailboxes", MailboxesAjaxHandler)
 
-	//router.HandleFunc("/ajax/domain/{domain}/mailbox/{username}", MailboxAjaxHandler)
-	//router.HandleFunc("/ajax/mailbox/{username}", MailboxAjaxHandler)
+	router.HandleFunc("/ajax/domain/{domain}/mailbox/{username}", MailboxAjaxHandler)
+	router.HandleFunc("/ajax/mailbox/{username}", MailboxAjaxHandler)
 
 }
