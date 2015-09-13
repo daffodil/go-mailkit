@@ -32,9 +32,10 @@ type Config struct {
 	DBConnect string `yaml:"db_connect" json:"db_connect"`
 
 	HTTPListen string `yaml:"http_listen" json:"http_listen"`
-	IMAPAddress string `toml:"imap_adddress" json:"imap_adddress"`
-	SMTPLogin string `toml:"smtp_login" json:"smtp_login"`
+	IMAPAddress string `yaml:"imap_adddress" json:"imap_adddress"`
+	SMTPLogin string `yaml:"smtp_login" json:"smtp_login"`
 
+	TableNames map[string]string  `yaml:"table_names" json:"table_names"`
 	//Tls *tls.Config
 }
 
@@ -62,7 +63,7 @@ func main(){
 	//config.Tls.ServerName = config.IMAPAddress
 	//config.Tls.InsecureSkipVerify = true
 
-	fmt.Printf("Config: %v\n", config)
+	fmt.Printf("Config: %v\n", config.TableNames)
 
 	// Create Database connection
 	var Db *sql.DB
@@ -81,7 +82,7 @@ func main(){
 
 	// Setup router and config mods
 	router := mux.NewRouter()
-	postfixadmin.SetupDb(config.DBEngine, Db)
+	postfixadmin.SetupDb(config.DBEngine, Db, config.TableNames)
 	postfixadmin.SetupRoutes(router)
 	//mailbox.Configure(config, r)
 

@@ -12,7 +12,6 @@ import(
 )
 
 type Domain struct {
-	//DomainID int `db:"domain_id" json:"domain_id"`
 	Domain string 		`db:"domain" json:"domain"`
 	Description string 	`db:"description" json:"description"`
 	Aliases int 		`db:"aliases" json:"aliases"`
@@ -26,6 +25,11 @@ type Domain struct {
 	Active int 			`db:"active" json:"active"`
 }
 
+func(me Domain) TableName() string {
+	return TableNames["domain"]
+}
+
+// The ajax data returned for a domain
 type DomainPayload struct {
 	Success bool `json:"success"` // keep extjs happy
 	Domain Domain `json:"domain"`
@@ -33,7 +37,7 @@ type DomainPayload struct {
 }
 
 
-
+// Create the return struct for a domain
 func CreateDomainPayload() DomainPayload {
 	payload := DomainPayload{}
 	payload.Success = true
@@ -42,16 +46,17 @@ func CreateDomainPayload() DomainPayload {
 }
 
 
-
 func GetDomain(domain_name string) (Domain, error) {
+
 	var dom Domain
-	row := Dbo.QueryRow("SELECT domain, description, aliases, mailboxes, maxquota, quota, transport, backupmx, created, modified, active FROM domain where domain = ? ", domain_name)
-	err := row.Scan(&dom.Domain, &dom.Description, &dom.Aliases, &dom.Mailboxes, &dom.MaxQuota, &dom.Quota, &dom.Transport, &dom.BackupMx, &dom.Created, &dom.Modified, &dom.Active)
+	var err error
+	Dbo.Where("domain = ? ", domain_name).Find(&dom)
+	//err := row.Scan(&dom.Domain, &dom.Description, &dom.Aliases, &dom.Mailboxes, &dom.MaxQuota, &dom.Quota, &dom.Transport, &dom.BackupMx, &dom.Created, &dom.Modified, &dom.Active)
 	return dom, err
 }
 
 
-// Handles /ajax/domain/<example.com>
+// Returns json at  /ajax/domain/{domain}
 func DomainAjaxHandler(resp http.ResponseWriter, req *http.Request) {
 	fmt.Println("DomainAjaxHandler")
 	vars := mux.Vars(req)

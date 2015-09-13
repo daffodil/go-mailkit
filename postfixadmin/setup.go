@@ -9,15 +9,23 @@ import(
 	"github.com/jinzhu/gorm"
 )
 
+var TableNames  map[string]string
+
+
 
 var Dbo gorm.DB
 
-func SetupDb( engine string, db *sql.DB){
+func SetupDb( engine string, db *sql.DB, table_names map[string]string){
 
 	// This is bummer cos I want to use db.Driver.Name or alike instead of a new function var
 	var err error
 	Dbo, err = gorm.Open(engine, db)
+	if err != nil {
 
+	}
+	Dbo.SingularTable(true)
+
+	TableNames = table_names
 }
 
 
