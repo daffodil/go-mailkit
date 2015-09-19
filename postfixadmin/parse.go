@@ -42,3 +42,4 @@ func ParseEmail(raw_email string) (*EmailParts, error) {
 	return em, nil
 
 }
+
