@@ -24,6 +24,7 @@ func SetupDb( engine string, db *sql.DB, table_names map[string]string){
 
 	}
 	Dbo.SingularTable(true)
+	Dbo.LogMode(true)
 
 	TableNames = table_names
 
@@ -41,12 +42,14 @@ func SetupRoutes( router *mux.Router){
 	router.HandleFunc("/ajax/domain/{domain}/mailboxes", MailboxesAjaxHandler)
 
 	router.HandleFunc("/ajax/domain/{domain}/mailbox/{username}", MailboxAjaxHandler)
-	router.HandleFunc("/ajax/mailbox/{username}", MailboxAjaxHandler)
+
+	router.HandleFunc("/ajax/mailbox/{email}", MailboxAjaxHandler)
+	router.HandleFunc("/ajax/mailbox/{email}/vacation", VacationAjaxHandler)
 
 	router.HandleFunc("/ajax/alias/{email}", AliasAjaxHandler)
 	router.HandleFunc("/ajax/domain/{domain}/aliases", AliasesAjaxHandler)
 
 	router.HandleFunc("/ajax/domain/{domain}/vacations", VacationsAjaxHandler)
-	router.HandleFunc("/ajax/vacation/{email}", VacationAjaxHandler)
+
 
 }

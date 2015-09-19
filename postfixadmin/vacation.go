@@ -7,7 +7,7 @@ import(
 	"fmt"
 	"net/http"
 	"encoding/json"
-	"errors"
+	//"errors"
 
 	"github.com/gorilla/mux"
 )
@@ -34,20 +34,20 @@ type VacationNotification struct {
 }
 
 
-type VacationsPayload struct {
+type VacationPayload struct {
 	Success bool `json:"success"` // keep extjs happy
-	Vacations []Vacation `json:"vacations"`
+	Vacation Vacation `json:"vacation"`
 	Error string `json:"error"`
 }
 
 
 
-func GetVacation(email string) ([]Vacation, error) {
-	var rows Vacation
+func GetVacation(email string) (Vacation, error) {
+	var row Vacation
 	var err error
 
-	Dbo.Where("email = ?", email).Find(&rows)
-	return rows, err
+	Dbo.Where("email = ?", email).Find(&row)
+	return row, err
 }
 
 // Handles /ajax/vacation/<email>
@@ -59,7 +59,7 @@ func VacationAjaxHandler(resp http.ResponseWriter, req *http.Request) {
 	payload.Success = true
 
 	var err error
-	payload.Vacation, err = GetVacation( vars["address"] )
+	payload.Vacation, err = GetVacation( vars["email"] )
 	if err != nil{
 		fmt.Println(err)
 		payload.Error = "DB Error: " + err.Error()
