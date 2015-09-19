@@ -19,13 +19,6 @@ type MailboxesPayload struct {
 }
 
 
-func CreateMailboxesPayload() MailboxesPayload {
-	t := MailboxesPayload{}
-	t.Success = true
-	t.Mailboxes = make([]Mailbox, 0)
-	return t
-}
-
 
 func GetMailboxes(domain string) ([]Mailbox, error) {
 	var rows []Mailbox
@@ -39,7 +32,9 @@ func MailboxesAjaxHandler(resp http.ResponseWriter, req *http.Request) {
 	fmt.Println("MailboxesAjaxHandler")
 	vars := mux.Vars(req)
 
-	payload := CreateMailboxesPayload()
+	payload := MailboxesPayload{}
+	payload.Success = true
+	payload.Mailboxes = make([]Mailbox, 0)
 
 	var err error
 	payload.Mailboxes, err = GetMailboxes( vars["domain"] )

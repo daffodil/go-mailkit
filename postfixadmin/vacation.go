@@ -32,3 +32,42 @@ type VacationNotification struct {
 	Notified string 	` json:"notified" `
 	NotifiedAt string 	` json:"notified_at" `
 }
+
+
+type VacationsPayload struct {
+	Success bool `json:"success"` // keep extjs happy
+	Vacations []Vacation `json:"vacations"`
+	Error string `json:"error"`
+}
+
+
+
+func GetVacation(email string) ([]Vacation, error) {
+	var rows Vacation
+	var err error
+
+	Dbo.Where("email = ?", email).Find(&rows)
+	return rows, err
+}
+
+// Handles /ajax/vacation/<email>
+func VacationAjaxHandler(resp http.ResponseWriter, req *http.Request) {
+	fmt.Println("VacationsAjaxHandler")
+	vars := mux.Vars(req)
+
+	payload := VacationPayload{}
+	payload.Success = true
+
+	var err error
+	payload.Vacation, err = GetVacation( vars["address"] )
+	if err != nil{
+		fmt.Println(err)
+		payload.Error = "DB Error: " + err.Error()
+	}
+
+
+	json_str, _ := json.MarshalIndent(payload, "" , "  ")
+	fmt.Fprint(resp, string(json_str))
+}
+
+

@@ -46,4 +46,7 @@ func SetupRoutes( router *mux.Router){
 	router.HandleFunc("/ajax/alias/{email}", AliasAjaxHandler)
 	router.HandleFunc("/ajax/domain/{domain}/aliases", AliasesAjaxHandler)
 
+	router.HandleFunc("/ajax/domain/{domain}/vacations", VacationsAjaxHandler)
+	router.HandleFunc("/ajax/vacation/{email}", VacationAjaxHandler)
+
 }
