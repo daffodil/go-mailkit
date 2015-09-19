@@ -51,7 +51,6 @@ func GetDomain(domain_name string) (Domain, error) {
 	var dom Domain
 	var err error
 	Dbo.Where("domain = ? ", domain_name).Find(&dom)
-	//err := row.Scan(&dom.Domain, &dom.Description, &dom.Aliases, &dom.Mailboxes, &dom.MaxQuota, &dom.Quota, &dom.Transport, &dom.BackupMx, &dom.Created, &dom.Modified, &dom.Active)
 	return dom, err
 }
 

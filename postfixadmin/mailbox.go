@@ -54,7 +54,7 @@ func GetMailbox(username string) (Mailbox, error) {
 }
 
 
-// Handles /ajax/domain/<example.com>
+// Handles /ajax/domain/<example.com>/mailbox/<email>
 func MailboxAjaxHandler(resp http.ResponseWriter, req *http.Request) {
 	fmt.Println("mailboxhandler")
 	vars := mux.Vars(req)
