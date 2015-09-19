@@ -26,6 +26,10 @@ func SetupDb( engine string, db *sql.DB, table_names map[string]string){
 	Dbo.SingularTable(true)
 
 	TableNames = table_names
+
+	DomainsMap = make(map[string]Domain)
+
+	LoadDomainsMap()
 }
 
 
@@ -40,4 +44,6 @@ func SetupRoutes( router *mux.Router){
 	router.HandleFunc("/ajax/mailbox/{username}", MailboxAjaxHandler)
 
 	router.HandleFunc("/ajax/alias/{email}", AliasAjaxHandler)
+	router.HandleFunc("/ajax/domain/{domain}/aliases", AliasesAjaxHandler)
+
 }

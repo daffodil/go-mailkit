@@ -47,13 +47,11 @@ func CreateDomainPayload() DomainPayload {
 
 
 func GetDomain(domain_name string) (Domain, error) {
-
 	var dom Domain
 	var err error
-	Dbo.Where("domain = ? ", domain_name).Find(&dom)
+	Dbo.Where("domain = ? ", domain_name).Order("domain").Find(&dom)
 	return dom, err
 }
-
 
 // Returns json at  /ajax/domain/{domain}
 func DomainAjaxHandler(resp http.ResponseWriter, req *http.Request) {

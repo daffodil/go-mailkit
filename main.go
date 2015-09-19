@@ -12,7 +12,7 @@ import (
 
 	"gopkg.in/yaml.v2"
 	"github.com/gorilla/mux"
-	//"github.com/jmoiron/sqlx"
+
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 
@@ -79,12 +79,13 @@ func main(){
 		os.Exit(1)
 	}
 	defer Db.Close()
+	postfixadmin.SetupDb(config.DBEngine, Db, config.TableNames)
+
 
 	// Setup router and config mods
 	router := mux.NewRouter()
-	postfixadmin.SetupDb(config.DBEngine, Db, config.TableNames)
 	postfixadmin.SetupRoutes(router)
-	//mailbox.Configure(config, r)
+
 
 
 	fmt.Println("Serving on " + config.HTTPListen)

@@ -9,6 +9,33 @@ import(
 	"encoding/json"
 )
 
+var DomainsMap map[string]Domain
+
+
+func LoadDomainsMap() error {
+
+	fmt.Println("Load Domains Map")
+	domains, err := GetDomains()
+	if err != nil {
+		return err
+	}
+	for _, dom := range domains {
+		DomainsMap[dom.Domain] = dom
+	}
+	fmt.Println(DomainsMap)
+	return nil
+}
+
+func DomainExists(domain string) bool {
+
+	_, ok := DomainsMap[domain]
+	if ok  {
+		return true
+	}
+	return false
+
+}
+
 
 type DomainsPayload struct {
 	Success bool `json:"success"` // keep extjs happy
@@ -25,12 +52,12 @@ func NewDomainsPayload() DomainsPayload {
 	return t
 }
 
-// gets forwardings from database
+// Gets `Domains` from database
 // TODO filter by domain in source
 func GetDomains() ([]Domain, error) {
 	var rows []Domain
 	var err error
-	Dbo.Find(&rows)
+	Dbo.Where("domain <> ?", "ALL").Find(&rows)
 	return rows, err
 }
 
