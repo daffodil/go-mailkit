@@ -27,6 +27,8 @@ type Vacation struct {
 	Active bool		 	` json:"active" `
 }
 
+
+
 type VacationNotification struct {
 	OnVacation string 	` json:"on_vacation" `
 	Notified string 	` json:"notified" `

@@ -18,7 +18,7 @@ type Alias struct {
 	Domain string 		`db:"domain" json:"domain"`
 	Created string		`db:"created" json:"created"`
 	Modified string		`db:"modified" json:"modified"`
-	Active int 			`db:"active" json:"active"`
+	Active int			`db:"active" json:"active"`
 }
 
 func(me Alias) TableName() string {

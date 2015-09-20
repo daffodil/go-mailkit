@@ -11,25 +11,26 @@ import(
 	"github.com/gorilla/mux"
 )
 
+//= A domain is a database in postfix
 type Domain struct {
-	Domain string 		`db:"domain" json:"domain"`
-	Description string 	`db:"description" json:"description"`
-	Aliases int 		`db:"aliases" json:"aliases"`
-	Mailboxes int 		`db:"mailboxes" json:"mailboxes"`
-	MaxQuota int 		`db:"maxquota" json:"maxquota"`
-	Quota int 			`db:"quota" json:"quota"`
-	Transport string	`db:"transport" json:"transport"`
-	BackupMx int 		`db:"backupmx" json:"backupmx"`
-	Created string		`db:"created" json:"created"`
-	Modified string		`db:"modified" json:"modified"`
-	Active int 			`db:"active" json:"active"`
+	Domain string 		` json:"domain"`
+	Description string 	` json:"description"`
+	Aliases int 		` json:"aliases"`
+	Mailboxes int 		` json:"mailboxes"`
+	MaxQuota int 		` json:"maxquota"`
+	Quota int 			` json:"quota"`
+	Transport string	` json:"transport"`
+	BackupMx int 		` json:"backupmx"`
+	Created string		` json:"created"`
+	Modified string		` json:"modified"`
+	Active int 			` json:"active"`
 }
 
 func(me Domain) TableName() string {
 	return TableNames["domain"]
 }
 
-// The ajax data returned for a domain
+//= Ajax struct for `domain`
 type DomainPayload struct {
 	Success bool `json:"success"` // keep extjs happy
 	Domain Domain `json:"domain"`
@@ -37,15 +38,7 @@ type DomainPayload struct {
 }
 
 
-// Create the return struct for a domain
-func CreateDomainPayload() DomainPayload {
-	payload := DomainPayload{}
-	payload.Success = true
-	payload.Domain = Domain{}
-	return payload
-}
-
-
+//= Gets a domain from db, or its error
 func GetDomain(domain_name string) (Domain, error) {
 	var dom Domain
 	var err error
@@ -53,12 +46,13 @@ func GetDomain(domain_name string) (Domain, error) {
 	return dom, err
 }
 
-// Returns json at  /ajax/domain/{domain}
+//=  /ajax/domain/{domain}
 func DomainAjaxHandler(resp http.ResponseWriter, req *http.Request) {
 	fmt.Println("DomainAjaxHandler")
 	vars := mux.Vars(req)
 
-	payload := CreateDomainPayload()
+	payload := DomainPayload{}
+	payload.Success = true
 
 	var err error
 	payload.Domain, err = GetDomain(vars["domain"])

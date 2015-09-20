@@ -9,6 +9,7 @@ import(
 	"encoding/json"
 )
 
+// DomainsMap is a cache for domains..in memory
 var DomainsMap map[string]Domain
 
 
@@ -31,7 +32,6 @@ func DomainExists(domain string) bool {
 
 	if DomainsMap == nil {
 		LoadDomainsMap()
-
 	}
 
 	_, ok := DomainsMap[domain]
