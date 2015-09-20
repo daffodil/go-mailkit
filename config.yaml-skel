@@ -1,0 +1,29 @@
+debug: true
+
+auth_secret: "My-Secret-Shared-Token-the-wombles+wibeldon+`common+are+we`.yo"
+
+http_listen: "0.0.0.0:9999"
+
+db:
+  engine: mysql
+  connect: "root:veg@/turnip_garden"
+  debug: true
+
+smtp_server: localhost
+smtp_login: bannana
+smtp_password: cabbage
+
+table_names:
+    admin: admin
+    alias: alias
+    alias_domain: alias_domain
+    config: config
+    domain: domain
+    domain_admins: domain_admins
+    fetchmail: fetchmail
+    log: log
+    mailbox: mailbox
+    vacation: vacation
+    vacation_notification: vacation_notification
+    quota: quota
+    quota2: quota2
