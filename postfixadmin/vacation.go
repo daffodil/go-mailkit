@@ -52,19 +52,30 @@ func GetVacation(email string) (Vacation, error) {
 
 // Handles /ajax/vacation/<email>
 func VacationAjaxHandler(resp http.ResponseWriter, req *http.Request) {
+
 	fmt.Println("VacationsAjaxHandler")
-	vars := mux.Vars(req)
 
 	payload := VacationPayload{}
-	payload.Success = true
+	payload.Success = true //extjs fu
 
-	var err error
-	payload.Vacation, err = GetVacation( vars["email"] )
-	if err != nil{
-		fmt.Println(err)
-		payload.Error = "DB Error: " + err.Error()
+	vars := mux.Vars(req)
+
+	email_addr, err_email := ParseEmail(vars["email"])
+	if err_email != nil {
+		payload.Error = err_email.Error()
+	} else {
+
+		// check mail exists
+
+
+
+		var err error
+		payload.Vacation, err = GetVacation(email_addr.Email)
+		if err != nil {
+			fmt.Println(err)
+			payload.Error = "DB Error: "+err.Error()
+		}
 	}
-
 
 	json_str, _ := json.MarshalIndent(payload, "" , "  ")
 	fmt.Fprint(resp, string(json_str))

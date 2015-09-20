@@ -15,6 +15,7 @@ var DomainsMap map[string]Domain
 func LoadDomainsMap() error {
 
 	fmt.Println("Load Domains Map")
+	DomainsMap = make(map[string]Domain)
 	domains, err := GetDomains()
 	if err != nil {
 		return err
@@ -27,6 +28,11 @@ func LoadDomainsMap() error {
 }
 
 func DomainExists(domain string) bool {
+
+	if DomainsMap == nil {
+		LoadDomainsMap()
+
+	}
 
 	_, ok := DomainsMap[domain]
 	if ok  {

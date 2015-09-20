@@ -16,7 +16,7 @@ import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 
-
+	"github.com/daffodil/go-mailkit/mailconfig"
 	"github.com/daffodil/go-mailkit/postfixadmin"
 
 )
@@ -28,8 +28,7 @@ type Config struct {
 
 	AuthSecret string `yaml:"auth_secret" json:"auth_secret" `
 
-	DBEngine string `yaml:"db_engine" json:"db_engine"`
-	DBConnect string `yaml:"db_connect" json:"db_connect"`
+
 
 	HTTPListen string `yaml:"http_listen" json:"http_listen"`
 	IMAPAddress string `yaml:"imap_adddress" json:"imap_adddress"`

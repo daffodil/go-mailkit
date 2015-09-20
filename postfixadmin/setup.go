@@ -28,9 +28,9 @@ func SetupDb( engine string, db *sql.DB, table_names map[string]string){
 
 	TableNames = table_names
 
-	DomainsMap = make(map[string]Domain)
 
-	LoadDomainsMap()
+
+
 }
 
 
