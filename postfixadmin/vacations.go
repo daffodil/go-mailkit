@@ -36,6 +36,7 @@ func GetVacations(domain string) ([]Vacation, error) {
 
 // Handles /ajax/domain/<domain>/vacations
 func VacationsAjaxHandler(resp http.ResponseWriter, req *http.Request) {
+
 	fmt.Println("VacationsAjaxHandler")
 	vars := mux.Vars(req)
 
@@ -53,6 +54,7 @@ func VacationsAjaxHandler(resp http.ResponseWriter, req *http.Request) {
 
 	json_str, _ := json.MarshalIndent(payload, "" , "  ")
 	fmt.Fprint(resp, string(json_str))
+
 }
 
 
