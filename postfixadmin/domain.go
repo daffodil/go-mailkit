@@ -7,7 +7,9 @@ import(
 	"fmt"
 	"net/http"
 	"encoding/json"
+	"errors"
 
+	"github.com/cenkalti/log"
 	"github.com/gorilla/mux"
 )
 
@@ -30,11 +32,12 @@ func(me Domain) TableName() string {
 	return TableNames["domain"]
 }
 
-//= Ajax struct for `domain`
-type DomainPayload struct {
-	Success bool `json:"success"` // keep extjs happy
-	Domain Domain `json:"domain"`
-	Error string `json:"error"`
+func IsDomainValid(domain_name string) error {
+
+	if DomainExists(domain_name) == false {
+		return errors.New("Domain `" + domain_name + "' does not exist")
+	}
+	return nil
 }
 
 
@@ -42,13 +45,30 @@ type DomainPayload struct {
 func GetDomain(domain_name string) (Domain, error) {
 	var dom Domain
 	var err error
+
+	err = IsDomainValid(domain_name)
+	if err != nil {
+		return dom, err
+	}
+
 	Dbo.Where("domain = ? ", domain_name).Order("domain").Find(&dom)
 	return dom, err
 }
 
+
+//= Ajax struct for `domain`
+type DomainPayload struct {
+	Success bool `json:"success"` // keep extjs happy
+	Domain Domain `json:"domain"`
+	Error string `json:"error"`
+}
+
 //=  /ajax/domain/{domain}
 func DomainAjaxHandler(resp http.ResponseWriter, req *http.Request) {
-	fmt.Println("DomainAjaxHandler")
+
+	//fmt.Println("DomainAjaxHandler")
+	log.Info("DomainAjaxHandler")
+
 	vars := mux.Vars(req)
 
 	payload := DomainPayload{}
@@ -57,10 +77,52 @@ func DomainAjaxHandler(resp http.ResponseWriter, req *http.Request) {
 	var err error
 	payload.Domain, err = GetDomain(vars["domain"])
 	if err != nil{
-		fmt.Println(err)
-		payload.Error = "DB Error: " + err.Error()
+		log.Info(err.Error())
+		payload.Error = "" + err.Error()
 	}
 
+	json_str, _ := json.MarshalIndent(payload, "" , "  ")
+	fmt.Fprint(resp, string(json_str))
+}
+
+
+//= Ajax struct for `domain` all
+type DomainAllPayload struct {
+	Success bool `json:"success"` // keep extjs happy
+	Domain Domain `json:"domain"`
+	Mailboxes []Mailbox `json:"mailboxes"`
+	Aliases []Alias `json:"aliases"`
+	Error string `json:"error"`
+}
+
+
+//=  /ajax/domain/{domain}/all
+func DomainAllAjaxHandler(resp http.ResponseWriter, req *http.Request) {
+
+	log.Info("DomainAllAjaxHandler")
+
+	vars := mux.Vars(req)
+	domain := vars["domain"]
+
+	payload := DomainAllPayload{}
+	payload.Success = true
+
+	var err error
+	payload.Domain, err = GetDomain(domain)
+	if err != nil{
+		log.Info(err.Error())
+		payload.Error = "" + err.Error()
+	}
+	payload.Mailboxes, err = GetMailboxes(domain)
+	if err != nil{
+		log.Info(err.Error())
+		payload.Error = "" + err.Error()
+	}
+	payload.Aliases, err = GetAliases(domain)
+	if err != nil{
+		log.Info(err.Error())
+		payload.Error = "" + err.Error()
+	}
 
 	json_str, _ := json.MarshalIndent(payload, "" , "  ")
 	fmt.Fprint(resp, string(json_str))

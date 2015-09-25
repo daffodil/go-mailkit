@@ -22,21 +22,6 @@ import (
 )
 
 
-type Config struct {
-
-	Debug bool `yaml:"debug" json:"debug" `
-
-	AuthSecret string `yaml:"auth_secret" json:"auth_secret" `
-
-
-
-	HTTPListen string `yaml:"http_listen" json:"http_listen"`
-	IMAPAddress string `yaml:"imap_adddress" json:"imap_adddress"`
-	SMTPLogin string `yaml:"smtp_login" json:"smtp_login"`
-
-	TableNames map[string]string  `yaml:"table_names" json:"table_names"`
-	//Tls *tls.Config
-}
 
 
 func main(){
@@ -45,7 +30,7 @@ func main(){
 	flag.Parse()
 
 	// Create and load config.yaml
-	config := new(Config)
+	config := new(mailconfig.Config)
 	contents, e := ioutil.ReadFile(*config_file)
 	if e != nil {
 		fmt.Printf("Config File Error: %v\n", e)
@@ -62,23 +47,23 @@ func main(){
 	//config.Tls.ServerName = config.IMAPAddress
 	//config.Tls.InsecureSkipVerify = true
 
-	fmt.Printf("Config: %v\n", config.TableNames)
+	fmt.Printf("Config: %v\n", config.Db.TableNames)
 
 	// Create Database connection
 	var Db *sql.DB
 	var err_db error
-	Db, err_db = sql.Open(config.DBEngine, config.DBConnect)
+	Db, err_db = sql.Open(config.Db.Engine, config.Db.Connect)
 	if err_db != nil {
-		fmt.Printf("Db Login Failed: ", err_db,"=", config.DBEngine)
+		fmt.Printf("Db Login Failed: ", err_db,"=", config.Db.Engine, config.Db.Connect)
 		os.Exit(1)
 	}
 	err_ping := Db.Ping()
 	if err_ping != nil {
-		fmt.Printf("Db Ping Failed: ", err_ping,"=", config.DBEngine)
+		fmt.Printf("Db Ping Failed: ", err_ping,"=", config.Db.Engine, config.Db.Connect)
 		os.Exit(1)
 	}
 	defer Db.Close()
-	postfixadmin.SetupDb(config.DBEngine, Db, config.TableNames)
+	postfixadmin.SetupDb(config.Db.Engine, Db, config.Db.TableNames, config.Db.SqlDebug)
 
 
 	// Setup router and config mods

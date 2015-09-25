@@ -7,6 +7,9 @@ import(
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
+
+
+
 )
 
 var TableNames  map[string]string
@@ -15,7 +18,7 @@ var TableNames  map[string]string
 
 var Dbo gorm.DB
 
-func SetupDb( engine string, db *sql.DB, table_names map[string]string){
+func SetupDb( engine string, db *sql.DB, table_names map[string]string, sql_log bool){
 
 	// This is bummer cos I want to use db.Driver.Name or alike instead of a new function var
 	var err error
@@ -24,12 +27,9 @@ func SetupDb( engine string, db *sql.DB, table_names map[string]string){
 
 	}
 	Dbo.SingularTable(true)
-	Dbo.LogMode(true)
+	Dbo.LogMode(sql_log)
 
 	TableNames = table_names
-
-
-
 
 }
 
@@ -38,8 +38,10 @@ func SetupRoutes( router *mux.Router){
 
 	router.HandleFunc("/ajax/domains", DomainsAjaxHandler)
 	router.HandleFunc("/ajax/domain/{domain}", DomainAjaxHandler)
-
+	router.HandleFunc("/ajax/domain/{domain}/all", DomainAllAjaxHandler)
+	router.HandleFunc("/ajax/domain/{domain}/vacations", VacationsAjaxHandler)
 	router.HandleFunc("/ajax/domain/{domain}/mailboxes", MailboxesAjaxHandler)
+	router.HandleFunc("/ajax/domain/{domain}/virtual", DomainVirtualAjaxHandler)
 
 	router.HandleFunc("/ajax/domain/{domain}/mailbox/{username}", MailboxAjaxHandler)
 
@@ -49,7 +51,8 @@ func SetupRoutes( router *mux.Router){
 	router.HandleFunc("/ajax/alias/{email}", AliasAjaxHandler)
 	router.HandleFunc("/ajax/domain/{domain}/aliases", AliasesAjaxHandler)
 
-	router.HandleFunc("/ajax/domain/{domain}/vacations", VacationsAjaxHandler)
+
+
 
 
 }
