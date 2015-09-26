@@ -13,16 +13,16 @@ import(
 )
 
 var TableNames  map[string]string
-
+var VacationDomain string
 
 
 var Dbo gorm.DB
 
-func SetupDb( engine string, db *sql.DB, table_names map[string]string, sql_log bool){
+func Initialize( db_engine string, db *sql.DB, table_names map[string]string, sql_log bool, vacation_domain string){
 
 	// This is bummer cos I want to use db.Driver.Name or alike instead of a new function var
 	var err error
-	Dbo, err = gorm.Open(engine, db)
+	Dbo, err = gorm.Open(db_engine, db)
 	if err != nil {
 
 	}
@@ -30,11 +30,11 @@ func SetupDb( engine string, db *sql.DB, table_names map[string]string, sql_log 
 	Dbo.LogMode(sql_log)
 
 	TableNames = table_names
-
+	VacationDomain = vacation_domain
 }
 
 
-func SetupRoutes( router *mux.Router){
+func SetupRoutes(router *mux.Router){
 
 	router.HandleFunc("/ajax/domains", DomainsAjaxHandler)
 	router.HandleFunc("/ajax/domain/{domain}", DomainAjaxHandler)

@@ -17,11 +17,11 @@ type Mailbox struct {
 	Name string 		`json:"name"`
 	Maildir string 		`json:"maildir"`
 	Quota int 			`json:"quota"`
-	Local_Part string	`json:"local_part"`
+	LocalPart string	`json:"local_part"`
 	Domain string		`json:"domain"`
 	Created string		`json:"created"`
 	Modified string		`json:"modified"`
-	Active int 			`json:"active"`
+	Active bool 			`json:"active"`
 }
 
 func(me Mailbox) TableName() string {

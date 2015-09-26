@@ -63,7 +63,7 @@ func main(){
 		os.Exit(1)
 	}
 	defer Db.Close()
-	postfixadmin.SetupDb(config.Db.Engine, Db, config.Db.TableNames, config.Db.SqlDebug)
+	postfixadmin.Initialize(config.Db.Engine, Db, config.Db.TableNames, config.Db.SqlDebug, config.VacationDomain)
 
 
 	// Setup router and config mods

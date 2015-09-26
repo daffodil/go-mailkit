@@ -16,14 +16,14 @@ import(
 
 type VacationsPayload struct {
 	Success bool `json:"success"` // keep extjs happy
-	Vacations []Vacation `json:"vacations"`
+	Vacations []*Vacation `json:"vacations"`
 	Error string `json:"error"`
 }
 
 
 
-func GetVacations(domain string) ([]Vacation, error) {
-	var rows []Vacation
+func GetVacations(domain string) ([]*Vacation, error) {
+	var rows []*Vacation
 	var err error
 
 	if DomainExists(domain) == false {
@@ -42,7 +42,7 @@ func VacationsAjaxHandler(resp http.ResponseWriter, req *http.Request) {
 
 	payload := VacationsPayload{}
 	payload.Success = true
-	payload.Vacations = make([]Vacation, 0)
+	payload.Vacations = make([]*Vacation, 0)
 
 	var err error
 	payload.Vacations, err = GetVacations( vars["domain"] )
