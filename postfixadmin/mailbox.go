@@ -37,13 +37,6 @@ type MailboxPayload struct {
 
 
 
-func CreateMailboxPayload() MailboxPayload {
-	payload := MailboxPayload{}
-	payload.Success = true
-	payload.Mailbox = Mailbox{}
-	return payload
-}
-
 
 func GetMailbox(username string) (Mailbox, error) {
 	var mailbox Mailbox
@@ -51,6 +44,25 @@ func GetMailbox(username string) (Mailbox, error) {
 	Dbo.Where("username = ? ", username).First(&mailbox)
 
 	return mailbox, err
+}
+
+func MailboxExists(address string ) bool {
+	var count int
+	Dbo.Model(Mailbox{}).Where("username = ?", address).Count(&count)
+	if count == 0 {
+		return false
+	}
+	return true
+}
+
+
+
+
+func CreateMailboxPayload() MailboxPayload {
+	payload := MailboxPayload{}
+	payload.Success = true
+	payload.Mailbox = Mailbox{}
+	return payload
 }
 
 

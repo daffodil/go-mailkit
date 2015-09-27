@@ -8,20 +8,22 @@ import(
 	"net/http"
 	"encoding/json"
 	"strings"
+	"errors"
+	"strconv"
 
 	"github.com/gorilla/mux"
 )
 
 
 type Vacation struct {
-	Email string 		` json:"email" `
+	Email string 		` json:"email" gorm:"primary_key" `
 	Subject string 		` json:"subject" `
 	Body string 		` json:"body" `
-	ActiveFrom string 	` json:"active_from" `
-	ActiveTo string 	` json:"active_to" `
+	Activefrom string 	` json:"active_from" `
+	Activeuntil string 	` json:"active_until" `
 	Cache string 		` json:"cache" `
 	Domain string 		` json:"domain" `
-	IntervalTime string ` json:"interval_time" `
+	IntervalTime int64 ` json:"interval_time" `
 	Created string 		` json:"created" `
 	Modified string 	` json:"modified" `
 	Active bool		 	` json:"active" `
@@ -56,10 +58,6 @@ func GetVacation(email string) (*Vacation, error) {
 	row := new(Vacation)
 	var err error
 	Dbo.Where("email = ?", email).Find(&row)
-	if row.Email == "" {
-		// no record so return
-		return nil, err
-	}
 	return row, err
 }
 
@@ -79,14 +77,46 @@ func VacationAjaxHandler(resp http.ResponseWriter, req *http.Request) {
 	} else {
 
 		// check mail exists
+		if !MailboxExists(email_addr.Address) {
+			payload.Error = errors.New("Mailbox `" + email_addr.Address + "` does not exist").Error()
+
+		} else {
+
+			var err error
+			payload.Vacation, err = GetVacation(email_addr.Address)
+			if err != nil {
+				fmt.Println(err)
+				payload.Error = "DB Error: "+err.Error()
+			}
+
+			switch req.Method {
+
+			case "POST":
+				req.ParseForm()
+				f := req.Form
+				//fmt.Println(f)
+				payload.Vacation.Email = email_addr.Address
+				payload.Vacation.Domain = email_addr.Domain
+				payload.Vacation.Active, err = strconv.ParseBool(f.Get("active"))
+				payload.Vacation.Activefrom = f.Get("active_from")
+				payload.Vacation.Activeuntil = f.Get("active_until")
+				payload.Vacation.IntervalTime, err = strconv.ParseInt(f.Get("interval_time"), 10, 64)
+				payload.Vacation.Subject = f.Get("subject")
+				payload.Vacation.Body = f.Get("body")
+
+				Dbo.Save(&payload.Vacation)
+				fmt.Println("------------------ POSTED-------------")
+				UpdateVacationAlias(payload.Vacation)
 
 
+			case "GET":
 
-		var err error
-		payload.Vacation, err = GetVacation(email_addr.Address)
-		if err != nil {
-			fmt.Println(err)
-			payload.Error = "DB Error: "+err.Error()
+
+				if payload.Vacation.Email == "" {
+					// probably record not exist
+					payload.Vacation.Email = email_addr.Address
+				}
+			}
 		}
 	}
 
@@ -95,3 +125,22 @@ func VacationAjaxHandler(resp http.ResponseWriter, req *http.Request) {
 }
 
 
+func UpdateVacationAlias(vac *Vacation) {
+
+	alias, err := GetAlias(vac.Email)
+	fmt.Println("UpdateVacationAlias", alias, err)
+	if err != nil {
+		// do something
+		return
+	}
+	em, errp := ParseAddress(vac.Email)
+	if errp != nil {
+		return
+	}
+	if vac.Active {
+		alias.AddGoto(em.VacationAddress)
+	}else{
+		alias.RemoveGoto(em.VacationAddress)
+	}
+	alias.Save()
+}

@@ -8,9 +8,11 @@ import(
 )
 
 type Addr struct {
-	Address string
-	User string
-	Domain string
+
+	Address string // foo@example.com
+	User string // foo
+	Domain string // example.com
+	VacationAddress string // foo#example.com@autoreply.example.com
 }
 
 
@@ -34,6 +36,7 @@ func ParseAddress(email_address string) (*Addr, error) {
 	em.Address = stripped
 	em.User = user_domain[0]
 	em.Domain = user_domain[1]
+	em.VacationAddress = em.User + "#" + em.Domain + "@" + VacationDomain
 
 	return em, nil
 

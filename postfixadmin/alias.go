@@ -7,27 +7,64 @@ import(
 	"fmt"
 	"net/http"
 	"encoding/json"
+	"strings"
 
 	"github.com/gorilla/mux"
 )
 
 
 type Alias struct {
-	Address string 		`db:"address" json:"address"`
-	Goto string 		`db:"goto" json:"goto"`
-	Domain string 		`db:"domain" json:"domain"`
-	Created string		`db:"created" json:"created"`
-	Modified string		`db:"modified" json:"modified"`
-	Active int			`db:"active" json:"active"`
+	Address string 		`json:"address" gorm:"primary_key"`
+	Goto string 		`json:"goto"`
+	Domain string 		`json:"domain"`
+	Created string		`json:"created"`
+	Modified string		`json:"modified"`
+	Active int			`json:"active"`
 }
 
-func(me Alias) TableName() string {
+func (me *Alias) TableName() string {
 	return TableNames["alias"]
 }
 
+func (me *Alias) Save(){
+	Dbo.Save(&me)
+}
+
+func (me *Alias) AddGoto(addr string) {
+	parts := strings.Split(me.Goto, ",")
+	found := false
+	for _, p := range parts {
+		if p == addr {
+			found = true
+		}
+	}
+	if found == true {
+		//fmt.Println("DOun vac alias")
+		return
+	}
+	parts = append(parts, addr)
+	me.Goto = strings.Join(parts, ",")
+}
+
+
+
+func(me *Alias) RemoveGoto(addr string) {
+
+	addresses := make([]string, 0)
+	gotos := strings.Split(me.Goto, ",")
+
+	for _, p := range gotos {
+		if p != addr {
+			addresses = append(addresses, p)
+		}
+	}
+	me.Goto = strings.Join(addresses, ",")
+}
+
+
 type AliasPayload struct {
 	Success bool `json:"success"` // keep extjs happy
-	Alias []Alias `json:"alias"`
+	Alias Alias `json:"alias"`
 	Error string `json:"error"`
 }
 
@@ -42,9 +79,9 @@ func CreateAliasPayload() AliasPayload {
 
 
 
-func GetAlias(email string) ([]Alias, error) {
+func GetAlias(email string) (Alias, error) {
 
-	var alias []Alias
+	var alias Alias
 	var err error
 	Dbo.Where("address = ? ", email).Find(&alias)
 	return alias, err
