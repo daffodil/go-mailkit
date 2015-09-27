@@ -92,13 +92,16 @@ func DomainVirtualAjaxHandler(resp http.ResponseWriter, req *http.Request) {
 		log.Info(err_al.Error())
 		payload.Error = "" + err_al.Error()
 	}
-	aliases_map := make(map[string][]string)
+	//aliases_map := make(map[string][]string)
 
 	for _, alias := range aliases {
+
+
 		mbox, ok := mailboxes_map[alias.Address]
 		if ok {
+			// Alias is also a mailbox - postfix style
 			gotos := SplitEmail(alias.Goto)
-			fmt.Println(mbox.Username, gotos, aliases_map)
+
 			for _, gotto := range gotos {
 
 				// postfix forwards alias to mailbox
@@ -114,15 +117,30 @@ func DomainVirtualAjaxHandler(resp http.ResponseWriter, req *http.Request) {
 
 				}
 
-				mbox2, ok2 := mailboxes_map[gotto]
-				if ok2 {
+				if gotto != mbox.Username {
+					targetBox, ok2 := mailboxes_map[gotto]
+					if ok2 {
+						//fmt.Println("----", alias.Address, gotto, targetBox.Username, aliases_map)
 
-					if mbox.Username != gotto {
-						mbox2.ForwardFrom = append(mbox.ForwardFrom,  mbox.Username)
+						targetBox.ForwardFrom = append(targetBox.ForwardFrom, mbox.Username)
+
 					}
 				}
-				payload.Aliases = append( payload.Aliases, alias)
+
 			}
+
+
+
+		} else {
+			fmt.Println("========", alias)
+			gotos2 := SplitEmail(alias.Goto)
+			for _, got2 := range gotos2 {
+				targetBox2, ok3 := mailboxes_map[got2]
+				if ok3 {
+					targetBox2.ForwardFrom = append(targetBox2.ForwardFrom, alias.Address)
+				}
+			}
+			payload.Aliases = append( payload.Aliases, alias)
 		}
 	}
 
