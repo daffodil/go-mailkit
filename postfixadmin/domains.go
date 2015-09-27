@@ -10,7 +10,7 @@ import(
 	"sync"
 )
 
-var mutex = &sync.Mutex{}
+
 
 // A memory cache for domains
 var domainsMap map[string]Domain
@@ -18,12 +18,14 @@ var domainsMap map[string]Domain
 
 func LoadDomainsCache() error {
 
+
 	fmt.Println("Load Domains Map")
 	domainsMap = make(map[string]Domain)
 	domains, err := GetDomains()
 	if err != nil {
 		return err
 	}
+	var mutex = &sync.Mutex{}
 	mutex.Lock()
 	for _, dom := range domains {
 		domainsMap[dom.Domain] = dom
