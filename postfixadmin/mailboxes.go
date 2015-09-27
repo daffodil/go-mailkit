@@ -27,8 +27,8 @@ func GetMailboxes(domain string) ([]Mailbox, error) {
 	return rows, err
 }
 
-// Handles /ajax/domain/<domain>/mailboxes
-func MailboxesAjaxHandler(resp http.ResponseWriter, req *http.Request) {
+// /ajax/domain/<domain>/mailboxes
+func AjaxHandlerMailboxes(resp http.ResponseWriter, req *http.Request) {
 	fmt.Println("MailboxesAjaxHandler")
 	vars := mux.Vars(req)
 

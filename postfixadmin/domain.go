@@ -64,7 +64,7 @@ type DomainPayload struct {
 }
 
 //=  /ajax/domain/{domain}
-func DomainAjaxHandler(resp http.ResponseWriter, req *http.Request) {
+func AjaxHandlerDomain(resp http.ResponseWriter, req *http.Request) {
 
 	//fmt.Println("DomainAjaxHandler")
 	log.Info("DomainAjaxHandler")
@@ -86,7 +86,7 @@ func DomainAjaxHandler(resp http.ResponseWriter, req *http.Request) {
 }
 
 
-//= Ajax struct for `domain` all
+// Ajax struct for `domain` all
 type DomainAllPayload struct {
 	Success bool `json:"success"` // keep extjs happy
 	Domain Domain `json:"domain"`
@@ -96,8 +96,8 @@ type DomainAllPayload struct {
 }
 
 
-//=  /ajax/domain/{domain}/all
-func DomainAllAjaxHandler(resp http.ResponseWriter, req *http.Request) {
+//  /ajax/domain/{domain}/all
+func AjaxHandlerDomainAll(resp http.ResponseWriter, req *http.Request) {
 
 	log.Info("DomainAllAjaxHandler")
 

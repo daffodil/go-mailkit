@@ -7,34 +7,39 @@ import(
 	"fmt"
 	"net/http"
 	"encoding/json"
+	"sync"
 )
 
-// DomainsMap is a cache for domains..in memory
-var DomainsMap map[string]Domain
+var mutex = &sync.Mutex{}
+
+// A memory cache for domains
+var domainsMap map[string]Domain
 
 
-func LoadDomainsMap() error {
+func LoadDomainsCache() error {
 
 	fmt.Println("Load Domains Map")
-	DomainsMap = make(map[string]Domain)
+	domainsMap = make(map[string]Domain)
 	domains, err := GetDomains()
 	if err != nil {
 		return err
 	}
+	mutex.Lock()
 	for _, dom := range domains {
-		DomainsMap[dom.Domain] = dom
+		domainsMap[dom.Domain] = dom
 	}
-	fmt.Println(DomainsMap)
+	mutex.Unlock()
+	fmt.Println(domainsMap)
 	return nil
 }
 
 func DomainExists(domain string) bool {
 
-	if DomainsMap == nil {
-		LoadDomainsMap()
+	if domainsMap == nil {
+		LoadDomainsCache()
 	}
 
-	_, ok := DomainsMap[domain]
+	_, ok := domainsMap[domain]
 	if ok  {
 		return true
 	}
@@ -68,7 +73,7 @@ func GetDomains() ([]Domain, error) {
 }
 
 // Handles /ajax/domains
-func DomainsAjaxHandler(resp http.ResponseWriter, req *http.Request) {
+func AjaxHandlerDomains(resp http.ResponseWriter, req *http.Request) {
 	fmt.Println("DomainsAjaxHandler")
 
 	payload := NewDomainsPayload()

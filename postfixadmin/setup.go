@@ -36,20 +36,20 @@ func Initialize( db_engine string, db *sql.DB, table_names map[string]string, sq
 
 func SetupRoutes(router *mux.Router){
 
-	router.HandleFunc("/ajax/domains", DomainsAjaxHandler)
-	router.HandleFunc("/ajax/domain/{domain}", DomainAjaxHandler)
-	router.HandleFunc("/ajax/domain/{domain}/all", DomainAllAjaxHandler)
-	router.HandleFunc("/ajax/domain/{domain}/vacations", VacationsAjaxHandler)
-	router.HandleFunc("/ajax/domain/{domain}/mailboxes", MailboxesAjaxHandler)
-	router.HandleFunc("/ajax/domain/{domain}/virtual", DomainVirtualAjaxHandler)
+	router.HandleFunc("/ajax/domains", AjaxHandlerDomains)
+	router.HandleFunc("/ajax/domain/{domain}", AjaxHandlerDomain)
+	router.HandleFunc("/ajax/domain/{domain}/all", AjaxHandlerDomainAll)
+	router.HandleFunc("/ajax/domain/{domain}/vacations", AjaxHandlerVacations)
+	router.HandleFunc("/ajax/domain/{domain}/mailboxes", AjaxHandlerMailboxes)
+	router.HandleFunc("/ajax/domain/{domain}/virtual", AjaxHandlerDomainVirtual)
 
-	router.HandleFunc("/ajax/domain/{domain}/mailbox/{username}", MailboxAjaxHandler)
+	router.HandleFunc("/ajax/domain/{domain}/mailbox/{username}", AjaxHandlerMailbox)
 
-	router.HandleFunc("/ajax/mailbox/{email}", MailboxAjaxHandler)
-	router.HandleFunc("/ajax/mailbox/{email}/vacation", VacationAjaxHandler)
+	router.HandleFunc("/ajax/mailbox/{email}", AjaxHandlerMailbox)
+	router.HandleFunc("/ajax/mailbox/{email}/vacation", AjaxHandlerVacation)
 
-	router.HandleFunc("/ajax/alias/{email}", AliasAjaxHandler)
-	router.HandleFunc("/ajax/domain/{domain}/aliases", AliasesAjaxHandler)
+	router.HandleFunc("/ajax/alias/{email}", AjaxHandlerAlias)
+	router.HandleFunc("/ajax/domain/{domain}/aliases", AjaxHandlerAliases)
 
 
 

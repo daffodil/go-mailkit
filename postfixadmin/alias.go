@@ -12,7 +12,7 @@ import(
 	"github.com/gorilla/mux"
 )
 
-
+// Represents the alias table
 type Alias struct {
 	Address string 		`json:"address" gorm:"primary_key"`
 	Goto string 		`json:"goto"`
@@ -26,10 +26,12 @@ func (me *Alias) TableName() string {
 	return TableNames["alias"]
 }
 
+// Save instance to Db
 func (me *Alias) Save(){
 	Dbo.Save(&me)
 }
 
+// Add address to forwarding
 func (me *Alias) AddGoto(addr string) {
 	parts := strings.Split(me.Goto, ",")
 	found := false
@@ -47,7 +49,7 @@ func (me *Alias) AddGoto(addr string) {
 }
 
 
-
+// Remove address from forwarding
 func(me *Alias) RemoveGoto(addr string) {
 
 	addresses := make([]string, 0)
@@ -62,13 +64,22 @@ func(me *Alias) RemoveGoto(addr string) {
 }
 
 
+func GetAlias(email string) (Alias, error) {
+
+	var alias Alias
+	var err error
+	Dbo.Where("address = ? ", email).Find(&alias)
+	return alias, err
+}
+
+
+
+
 type AliasPayload struct {
 	Success bool `json:"success"` // keep extjs happy
 	Alias Alias `json:"alias"`
 	Error string `json:"error"`
 }
-
-
 
 func CreateAliasPayload() AliasPayload {
 	payload := AliasPayload{}
@@ -79,16 +90,9 @@ func CreateAliasPayload() AliasPayload {
 
 
 
-func GetAlias(email string) (Alias, error) {
 
-	var alias Alias
-	var err error
-	Dbo.Where("address = ? ", email).Find(&alias)
-	return alias, err
-}
-
-// Handles /ajax/alias/<email>
-func AliasAjaxHandler(resp http.ResponseWriter, req *http.Request) {
+// /ajax/alias/<email>
+func AjaxHandlerAlias(resp http.ResponseWriter, req *http.Request) {
 	fmt.Println("AliasAjaxHandler")
 	vars := mux.Vars(req)
 

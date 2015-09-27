@@ -32,8 +32,8 @@ func GetAliases(domain string) ([]Alias, error) {
 	return rows, err
 }
 
-// Handles /ajax/domain/<domain>/aliases
-func AliasesAjaxHandler(resp http.ResponseWriter, req *http.Request) {
+// /ajax/domain/<domain>/aliases
+func AjaxHandlerAliases(resp http.ResponseWriter, req *http.Request) {
 
 	fmt.Println("AliasesAjaxHandler")
 	vars := mux.Vars(req)

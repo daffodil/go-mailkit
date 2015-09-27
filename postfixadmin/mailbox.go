@@ -66,8 +66,8 @@ func CreateMailboxPayload() MailboxPayload {
 }
 
 
-// Handles /ajax/domain/<example.com>/mailbox/<email>
-func MailboxAjaxHandler(resp http.ResponseWriter, req *http.Request) {
+// /ajax/domain/<example.com>/mailbox/<email>
+func AjaxHandlerMailbox(resp http.ResponseWriter, req *http.Request) {
 	fmt.Println("mailboxhandler")
 	vars := mux.Vars(req)
 

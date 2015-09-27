@@ -7,16 +7,16 @@ import(
 	"strings"
 )
 
-type Addr struct {
-
+//= Components of an email address
+type Address struct {
 	Address string // foo@example.com
 	User string // foo
 	Domain string // example.com
 	VacationAddress string // foo#example.com@autoreply.example.com
 }
 
-
-func ParseAddress(email_address string) (*Addr, error) {
+// Parses an email_address to Addr{} or error
+func ParseAddress(email_address string) (*Address, error) {
 
 	stripped := strings.TrimSpace(email_address)
 	if len(stripped) == 0 {
@@ -32,13 +32,13 @@ func ParseAddress(email_address string) (*Addr, error) {
 		return nil, errors.New("Domain not exist in Db for email `" + email_address + "` ")
 	}
 
-	em := new(Addr)
-	em.Address = stripped
-	em.User = user_domain[0]
-	em.Domain = user_domain[1]
-	em.VacationAddress = em.User + "#" + em.Domain + "@" + VacationDomain
+	addr := new(Address)
+	addr.Address = stripped
+	addr.User = user_domain[0]
+	addr.Domain = user_domain[1]
+	addr.VacationAddress = addr.User + "#" + addr.Domain + "@" + VacationDomain
 
-	return em, nil
+	return addr, nil
 
 }
 

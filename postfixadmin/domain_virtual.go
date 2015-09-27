@@ -40,8 +40,8 @@ func GetMailboxesVirtual(domain string) ([]*MailboxVirtual, error) {
 	return rows, err
 }
 
-//=  /ajax/domain/{domain}/all
-func DomainVirtualAjaxHandler(resp http.ResponseWriter, req *http.Request) {
+//  /ajax/domain/{domain}/virtual
+func AjaxHandlerDomainVirtual(resp http.ResponseWriter, req *http.Request) {
 
 	log.Info("DomainVirtualAjaxHandler")
 

@@ -62,7 +62,7 @@ func GetVacation(email string) (*Vacation, error) {
 }
 
 // Handles /ajax/vacation/<email>
-func VacationAjaxHandler(resp http.ResponseWriter, req *http.Request) {
+func AjaxHandlerVacation(resp http.ResponseWriter, req *http.Request) {
 
 	fmt.Println("VacationsAjaxHandler")
 
