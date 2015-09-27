@@ -3,41 +3,37 @@
 package postfixadmin
 
 import(
-
-	"fmt"
-	//"net/http"
-	//"encoding/json"
-	//"errors"
 	"errors"
 	"strings"
-
 )
 
-type EmailParts struct {
-	Email string
+type Addr struct {
+	Address string
 	User string
 	Domain string
 }
 
 
-func ParseEmail(raw_email string) (*EmailParts, error) {
+func ParseAddress(email_address string) (*Addr, error) {
 
-	stripped := strings.TrimSpace(raw_email)
+	stripped := strings.TrimSpace(email_address)
 	if len(stripped) == 0 {
 		return nil, errors.New("Invalid Email - zero length")
 	}
 
 	if strings.Contains(stripped, "@") == false {
-		return nil, errors.New("Invalid Email, no @ in `" + raw_email + "` ")
+		return nil, errors.New("Invalid Email, no @ in `" + email_address + "` ")
 	}
+
 	user_domain :=  strings.Split(stripped, "@")
-	fmt.Println(user_domain)
-
 	if DomainExists(user_domain[1]) == false {
-		return nil, errors.New("Domain not exist in Db for email `" + raw_email + "` ")
+		return nil, errors.New("Domain not exist in Db for email `" + email_address + "` ")
 	}
 
-	em := new(EmailParts)
+	em := new(Addr)
+	em.Address = stripped
+	em.User = user_domain[0]
+	em.Domain = user_domain[1]
 
 	return em, nil
 

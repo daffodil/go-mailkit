@@ -7,7 +7,7 @@ import(
 	"fmt"
 	"net/http"
 	"encoding/json"
-	//"errors"
+	"strings"
 
 	"github.com/gorilla/mux"
 )
@@ -38,17 +38,28 @@ type VacationNotification struct {
 
 type VacationPayload struct {
 	Success bool `json:"success"` // keep extjs happy
-	Vacation Vacation `json:"vacation"`
+	Vacation *Vacation `json:"vacation"`
 	Error string `json:"error"`
 }
 
 
+func IsVacationAddress(address string) bool {
 
-func GetVacation(email string) (Vacation, error) {
-	var row Vacation
+	user_domain :=  strings.Split(address, "@")
+	if user_domain[1] == VacationDomain {
+		return true
+	}
+	return false
+}
+
+func GetVacation(email string) (*Vacation, error) {
+	row := new(Vacation)
 	var err error
-
 	Dbo.Where("email = ?", email).Find(&row)
+	if row.Email == "" {
+		// no record so return
+		return nil, err
+	}
 	return row, err
 }
 
@@ -62,7 +73,7 @@ func VacationAjaxHandler(resp http.ResponseWriter, req *http.Request) {
 
 	vars := mux.Vars(req)
 
-	email_addr, err_email := ParseEmail(vars["email"])
+	email_addr, err_email := ParseAddress(vars["email"])
 	if err_email != nil {
 		payload.Error = err_email.Error()
 	} else {
@@ -72,7 +83,7 @@ func VacationAjaxHandler(resp http.ResponseWriter, req *http.Request) {
 
 
 		var err error
-		payload.Vacation, err = GetVacation(email_addr.Email)
+		payload.Vacation, err = GetVacation(email_addr.Address)
 		if err != nil {
 			fmt.Println(err)
 			payload.Error = "DB Error: "+err.Error()

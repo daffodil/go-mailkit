@@ -87,29 +87,41 @@ func DomainVirtualAjaxHandler(resp http.ResponseWriter, req *http.Request) {
 
 	// Get list of aliases and postfix
 	// does curious things such as forwarding to same mailbox
-	payload.Aliases, err = GetAliases(domain)
-	if err != nil{
-		log.Info(err.Error())
-		payload.Error = "" + err.Error()
+	aliases, err_al := GetAliases(domain)
+	if err_al != nil{
+		log.Info(err_al.Error())
+		payload.Error = "" + err_al.Error()
 	}
-	for _, alias := range payload.Aliases {
+	aliases_map := make(map[string][]string)
+
+	for _, alias := range aliases {
 		mbox, ok := mailboxes_map[alias.Address]
 		if ok {
 			gotos := SplitEmail(alias.Goto)
-			fmt.Println(mbox.Username, gotos)
+			fmt.Println(mbox.Username, gotos, aliases_map)
 			for _, gotto := range gotos {
+
+				// postfix forwards alias to mailbox
 				if gotto == mbox.Username {
 					mbox.ForwardOnly = false
+
+				// User on vactaion
+				} else if IsVacationAddress(gotto){
+					// to nothing
+
 				} else {
 					mbox.ForwardTo = append(mbox.ForwardTo, gotto)
+
 				}
 
 				mbox2, ok2 := mailboxes_map[gotto]
 				if ok2 {
-					//if mbox2.Username != alias.Address {
-						mbox2.ForwardFrom = append(mbox.ForwardFrom, gotto)
-					//}
+
+					if mbox.Username != gotto {
+						mbox2.ForwardFrom = append(mbox.ForwardFrom,  mbox.Username)
+					}
 				}
+				payload.Aliases = append( payload.Aliases, alias)
 			}
 		}
 	}
