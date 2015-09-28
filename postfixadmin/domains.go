@@ -15,13 +15,11 @@ import(
 // A memory cache for domains
 var domainsMap map[string]Domain
 
-
+// Load/Reload the domains
 func LoadDomainsCache() error {
 
-
-	fmt.Println("Load Domains Map")
 	domainsMap = make(map[string]Domain)
-	domains, err := GetDomains()
+	domains, err := LoadDomains()
 	if err != nil {
 		return err
 	}
@@ -35,6 +33,17 @@ func LoadDomainsCache() error {
 	return nil
 }
 
+
+// Load domains from database
+func LoadDomains() ([]Domain, error) {
+	var rows []Domain
+	var err error
+	Dbo.Where("domain <> ?", "ALL").Find(&rows)
+	return rows, err
+}
+
+// Check a domain exists
+// TODO: decide if active
 func DomainExists(domain string) bool {
 
 	if domainsMap == nil {
@@ -58,30 +67,16 @@ type DomainsPayload struct {
 
 
 
-func NewDomainsPayload() DomainsPayload {
-	t := DomainsPayload{}
-	t.Success = true
-	t.Domains = make([]Domain, 0)
-	return t
-}
-
-// Gets `Domains` from database
-// TODO filter by domain in source
-func GetDomains() ([]Domain, error) {
-	var rows []Domain
-	var err error
-	Dbo.Where("domain <> ?", "ALL").Find(&rows)
-	return rows, err
-}
-
 // Handles /ajax/domains
 func AjaxHandlerDomains(resp http.ResponseWriter, req *http.Request) {
 	fmt.Println("DomainsAjaxHandler")
 
-	payload := NewDomainsPayload()
+	payload := DomainsPayload{}
+	payload.Success = true
+	//t.Domains = make([]Domain, 0)
 
 	var err error
-	payload.Domains, err = GetDomains()
+	payload.Domains, err = LoadDomains()
 	if err != nil{
 		fmt.Println(err)
 		payload.Error = "DB Error: " + err.Error()

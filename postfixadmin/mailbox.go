@@ -21,7 +21,7 @@ type Mailbox struct {
 	Domain string		`json:"domain"`
 	Created string		`json:"created"`
 	Modified string		`json:"modified"`
-	Active bool 			`json:"active"`
+	Active bool 		`json:"active"`
 }
 
 func(me Mailbox) TableName() string {
@@ -29,16 +29,10 @@ func(me Mailbox) TableName() string {
 }
 
 
-type MailboxPayload struct {
-	Success bool `json:"success"` // keep extjs happy
-	Mailbox Mailbox `json:"mailbox"`
-	Error string `json:"error"`
-}
 
 
 
-
-func GetMailbox(username string) (Mailbox, error) {
+func LoadMailbox(username string) (Mailbox, error) {
 	var mailbox Mailbox
 	var err error
 	Dbo.Where("username = ? ", username).First(&mailbox)
@@ -57,6 +51,12 @@ func MailboxExists(address string ) bool {
 
 
 
+type MailboxPayload struct {
+	Success bool `json:"success"` // keep extjs happy
+	Mailbox Mailbox `json:"mailbox"`
+	Error string `json:"error"`
+}
+
 
 func CreateMailboxPayload() MailboxPayload {
 	payload := MailboxPayload{}
@@ -74,7 +74,7 @@ func AjaxHandlerMailbox(resp http.ResponseWriter, req *http.Request) {
 	payload := CreateMailboxPayload()
 
 	var err error
-	payload.Mailbox, err = GetMailbox(vars["username"])
+	payload.Mailbox, err = LoadMailbox(vars["username"])
 	if err != nil{
 		fmt.Println(err)
 		payload.Error = "DB Error: " + err.Error()

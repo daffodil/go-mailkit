@@ -18,6 +18,8 @@ var VacationDomain string
 
 var Dbo gorm.DB
 
+// Initializes the postfix admin module..
+// TODO Must be a better way
 func Initialize( db_engine string, db *sql.DB, table_names map[string]string, sql_log bool, vacation_domain string){
 
 	// This is bummer cos I want to use db.Driver.Name or alike instead of a new function var
@@ -33,7 +35,8 @@ func Initialize( db_engine string, db *sql.DB, table_names map[string]string, sq
 	VacationDomain = vacation_domain
 }
 
-
+// Add routes for postfixadmin module. Idea is that
+// if your not admin or alike, then u get a 404 or 500
 func SetupRoutes(router *mux.Router){
 
 	router.HandleFunc("/ajax/domains", AjaxHandlerDomains)
@@ -50,9 +53,5 @@ func SetupRoutes(router *mux.Router){
 
 	router.HandleFunc("/ajax/alias/{email}", AjaxHandlerAlias)
 	router.HandleFunc("/ajax/domain/{domain}/aliases", AjaxHandlerAliases)
-
-
-
-
 
 }

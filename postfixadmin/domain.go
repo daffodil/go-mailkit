@@ -41,8 +41,10 @@ func IsDomainValid(domain_name string) error {
 }
 
 
-//= Gets a domain from db, or its error
-func GetDomain(domain_name string) (Domain, error) {
+//= Loads a domain row from db
+//
+// TODO check its in cache ?
+func LoadDomain(domain_name string) (Domain, error) {
 	var dom Domain
 	var err error
 
@@ -50,7 +52,6 @@ func GetDomain(domain_name string) (Domain, error) {
 	if err != nil {
 		return dom, err
 	}
-
 	Dbo.Where("domain = ? ", domain_name).Order("domain").Find(&dom)
 	return dom, err
 }
@@ -75,7 +76,7 @@ func AjaxHandlerDomain(resp http.ResponseWriter, req *http.Request) {
 	payload.Success = true
 
 	var err error
-	payload.Domain, err = GetDomain(vars["domain"])
+	payload.Domain, err = LoadDomain(vars["domain"])
 	if err != nil{
 		log.Info(err.Error())
 		payload.Error = "" + err.Error()
@@ -108,7 +109,7 @@ func AjaxHandlerDomainAll(resp http.ResponseWriter, req *http.Request) {
 	payload.Success = true
 
 	var err error
-	payload.Domain, err = GetDomain(domain)
+	payload.Domain, err = LoadDomain(domain)
 	if err != nil{
 		log.Info(err.Error())
 		payload.Error = "" + err.Error()

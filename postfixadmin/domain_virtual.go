@@ -52,7 +52,7 @@ func AjaxHandlerDomainVirtual(resp http.ResponseWriter, req *http.Request) {
 	payload.Success = true
 
 	var err error
-	payload.Domain, err = GetDomain(domain)
+	payload.Domain, err = LoadDomain(domain)
 	if err != nil{
 		log.Info(err.Error())
 		payload.Error =  err.Error()
