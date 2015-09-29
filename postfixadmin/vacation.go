@@ -83,7 +83,7 @@ func AjaxHandlerVacation(resp http.ResponseWriter, req *http.Request) {
 		} else {
 
 			var err error
-			payload.Vacation, err = GetVacation(email_addr.Address)
+			payload.Vacation, err = LoadVacation(email_addr.Address)
 			if err != nil {
 				fmt.Println(err)
 				payload.Error = "DB Error: "+err.Error()

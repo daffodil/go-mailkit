@@ -52,14 +52,14 @@ func main(){
 	// Create Database connection
 	var Db *sql.DB
 	var err_db error
-	Db, err_db = sql.Open(config.Db.Engine, config.Db.Connect)
+	Db, err_db = sql.Open(config.Db.Engine, config.Db.Datasource)
 	if err_db != nil {
-		fmt.Printf("Db Login Failed: ", err_db,"=", config.Db.Engine, config.Db.Connect)
+		fmt.Printf("Db Login Failed: ", err_db,"=", config.Db.Engine, config.Db.Datasource)
 		os.Exit(1)
 	}
 	err_ping := Db.Ping()
 	if err_ping != nil {
-		fmt.Printf("Db Ping Failed: ", err_ping,"=", config.Db.Engine, config.Db.Connect)
+		fmt.Printf("Db Ping Failed: ", err_ping,"=", config.Db.Engine, config.Db.Datasource)
 		os.Exit(1)
 	}
 	defer Db.Close()

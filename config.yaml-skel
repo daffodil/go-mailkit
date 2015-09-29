@@ -8,11 +8,14 @@ vacation_domain: "autoreply.example.com"
 
 db:
   engine: mysql
-  connect: "root:root@/mailserver_pfa"
+  datasource: "root:root@/mailserver_pfa"
   debug: true
+  table_prefix: "postfix_"
   table_names:
     admin: admin
     alias: alias
+    column_names:
+       address: email
     alias_domain: alias_domain
     config: config
     domain: domain

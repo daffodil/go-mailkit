@@ -70,7 +70,9 @@ func CreateMailboxPayload() MailboxPayload {
 func AjaxHandlerMailbox(resp http.ResponseWriter, req *http.Request) {
 
 
-
+	if AjaxAuth(resp, req) == false {
+		return
+	}
 
 	vars := mux.Vars(req)
 
@@ -81,6 +83,32 @@ func AjaxHandlerMailbox(resp http.ResponseWriter, req *http.Request) {
 	if err != nil{
 		fmt.Println(err)
 		payload.Error = "DB Error: " + err.Error()
+	}
+
+	switch req.Method {
+
+	case "POST":
+
+		f := req.Form
+		//fmt.Println(f)
+		payload.Vacation.Mailbox = email_addr.Address
+		payload.Vacation.Domain = email_addr.Domain
+		payload.Vacation.Active, err = strconv.ParseBool(f.Get("active"))
+		payload.Vacation.Activefrom = f.Get("active_from")
+		payload.Vacation.Activeuntil = f.Get("active_until")
+		payload.Vacation.IntervalTime, err = strconv.ParseInt(f.Get("interval_time"), 10, 64)
+		payload.Vacation.Subject = f.Get("subject")
+		payload.Vacation.Body = f.Get("body")
+
+		Dbo.Save(&payload.Vacation)
+		fmt.Println("------------------ POSTED-------------")
+		UpdateVacationAlias(payload.Vacation)
+
+
+	case "GET":
+
+		// just pass through vars
+
 	}
 
 

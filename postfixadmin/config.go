@@ -2,6 +2,8 @@
 
 package postfixadmin
 
+var conf *Config
+
 type Config struct {
 
 	Debug bool `yaml:"debug" json:"debug" `
@@ -16,9 +18,20 @@ type Config struct {
 	IMAPAddress string `yaml:"imap_adddress" json:"imap_adddress"`
 	SMTPLogin string `yaml:"smtp_login" json:"smtp_login"`
 
-
 	//Tls *tls.Config
 }
 
-var conf *Config
+
+type DbConf struct {
+	Engine string ` yaml:"engine" json:"engine" `
+	Datasource string `yaml:"datasource" json:"connect"`
+	Debug bool `yaml:"debug" json:"debug"`
+	//Db *sql.DB
+
+	TableNames map[string]string  `yaml:"table_names" json:"table_names"`
+}
+
+
+
+
 
