@@ -36,7 +36,7 @@ func ParseAddress(email_address string) (*Address, error) {
 	addr.Address = stripped
 	addr.User = user_domain[0]
 	addr.Domain = user_domain[1]
-	addr.VacationAddress = addr.User + "#" + addr.Domain + "@" + VacationDomain
+	addr.VacationAddress = addr.User + "#" + addr.Domain + "@" + conf.VacationDomain
 
 	return addr, nil
 

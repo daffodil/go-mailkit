@@ -25,7 +25,7 @@ type Mailbox struct {
 }
 
 func(me Mailbox) TableName() string {
-	return TableNames["mailbox"]
+	return conf.Db.TableNames["mailbox"]
 }
 
 
@@ -68,7 +68,10 @@ func CreateMailboxPayload() MailboxPayload {
 
 // /ajax/domain/<example.com>/mailbox/<email>
 func AjaxHandlerMailbox(resp http.ResponseWriter, req *http.Request) {
-	fmt.Println("mailboxhandler")
+
+
+
+
 	vars := mux.Vars(req)
 
 	payload := CreateMailboxPayload()

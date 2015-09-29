@@ -1,6 +1,6 @@
 
 
-package mailconfig
+package postfixadmin
 
 type Config struct {
 
@@ -19,4 +19,6 @@ type Config struct {
 
 	//Tls *tls.Config
 }
+
+var conf *Config
 

@@ -29,7 +29,7 @@ type Domain struct {
 }
 
 func(me Domain) TableName() string {
-	return TableNames["domain"]
+	return conf.Db.TableNames["domain"]
 }
 
 func IsDomainValid(domain_name string) error {
@@ -38,6 +38,16 @@ func IsDomainValid(domain_name string) error {
 		return errors.New("Domain `" + domain_name + "' does not exist")
 	}
 	return nil
+}
+
+
+func DomainExists(domain string ) bool {
+	var count int
+	Dbo.Model(Domain{}).Where("domain = ?", domain).Count(&count)
+	if count == 0 {
+		return false
+	}
+	return true
 }
 
 
@@ -67,9 +77,13 @@ type DomainPayload struct {
 //=  /ajax/domain/{domain}
 func AjaxHandlerDomain(resp http.ResponseWriter, req *http.Request) {
 
+
+
 	//fmt.Println("DomainAjaxHandler")
 	log.Info("DomainAjaxHandler")
-
+	if AjaxAuth(resp, req) == false {
+		return
+	}
 	vars := mux.Vars(req)
 
 	payload := DomainPayload{}

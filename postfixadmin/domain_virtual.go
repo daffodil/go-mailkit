@@ -23,7 +23,7 @@ type MailboxVirtual struct {
 }
 
 
-//= Ajax struct for `domain` all
+// Ajax struct for `domain` all
 type DomainVirtualPayload struct {
 	Success bool `json:"success"` // keep extjs happy
 	Domain Domain `json:"domain"`
@@ -43,6 +43,9 @@ func GetMailboxesVirtual(domain string) ([]*MailboxVirtual, error) {
 //  /ajax/domain/{domain}/virtual
 func AjaxHandlerDomainVirtual(resp http.ResponseWriter, req *http.Request) {
 
+	if AjaxAuth(resp, req) == false {
+		return
+	}
 	log.Info("DomainVirtualAjaxHandler")
 
 	vars := mux.Vars(req)

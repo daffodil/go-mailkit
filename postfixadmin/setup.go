@@ -8,32 +8,27 @@ import(
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 
-
-
 )
-
-var TableNames  map[string]string
-var VacationDomain string
 
 
 var Dbo gorm.DB
 
 // Initializes the postfix admin module..
-// TODO Must be a better way
-func Initialize( db_engine string, db *sql.DB, table_names map[string]string, sql_log bool, vacation_domain string){
+func Initialize( conff *Config, db *sql.DB){
+
+	conf = conff
 
 	// This is bummer cos I want to use db.Driver.Name or alike instead of a new function var
 	var err error
-	Dbo, err = gorm.Open(db_engine, db)
+	Dbo, err = gorm.Open(conf.Db.Engine, db)
 	if err != nil {
 
 	}
 	Dbo.SingularTable(true)
-	Dbo.LogMode(sql_log)
+	Dbo.LogMode(conf.Debug)
 
-	TableNames = table_names
-	VacationDomain = vacation_domain
 }
+
 
 // Add routes for postfixadmin module. Idea is that
 // if your not admin or alike, then u get a 404 or 500

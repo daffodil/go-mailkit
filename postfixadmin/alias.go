@@ -23,7 +23,7 @@ type Alias struct {
 }
 
 func (me *Alias) TableName() string {
-	return TableNames["alias"]
+	return conf.Db.TableNames["alias"]
 }
 
 // Save instance to Db

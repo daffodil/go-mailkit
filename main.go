@@ -16,7 +16,7 @@ import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 
-	"github.com/daffodil/go-mailkit/mailconfig"
+	//"github.com/daffodil/go-mailkit/mailconfig"
 	"github.com/daffodil/go-mailkit/postfixadmin"
 
 )
@@ -30,7 +30,7 @@ func main(){
 	flag.Parse()
 
 	// Create and load config.yaml
-	config := new(mailconfig.Config)
+	config := new(postfixadmin.Config)
 	contents, e := ioutil.ReadFile(*config_file)
 	if e != nil {
 		fmt.Printf("Config File Error: %v\n", e)
@@ -63,7 +63,7 @@ func main(){
 		os.Exit(1)
 	}
 	defer Db.Close()
-	postfixadmin.Initialize(config.Db.Engine, Db, config.Db.TableNames, config.Db.SqlDebug, config.VacationDomain)
+	postfixadmin.Initialize(config, Db)
 
 
 	// Setup router and config mods

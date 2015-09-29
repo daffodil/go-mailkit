@@ -1,5 +1,5 @@
 
-package mailconfig
+package postfixadmin
 
 import (
 	//"database/sql"

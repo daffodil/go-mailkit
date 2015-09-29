@@ -7,31 +7,10 @@ import(
 	"fmt"
 	"net/http"
 	"encoding/json"
-	"sync"
 )
 
 
 
-// A memory cache for domains
-var domainsMap map[string]Domain
-
-// Load/Reload the domains
-func LoadDomainsCache() error {
-
-	domainsMap = make(map[string]Domain)
-	domains, err := LoadDomains()
-	if err != nil {
-		return err
-	}
-	var mutex = &sync.Mutex{}
-	mutex.Lock()
-	for _, dom := range domains {
-		domainsMap[dom.Domain] = dom
-	}
-	mutex.Unlock()
-	fmt.Println(domainsMap)
-	return nil
-}
 
 
 // Load domains from database
@@ -42,21 +21,7 @@ func LoadDomains() ([]Domain, error) {
 	return rows, err
 }
 
-// Check a domain exists
-// TODO: decide if active
-func DomainExists(domain string) bool {
 
-	if domainsMap == nil {
-		LoadDomainsCache()
-	}
-
-	_, ok := domainsMap[domain]
-	if ok  {
-		return true
-	}
-	return false
-
-}
 
 
 type DomainsPayload struct {
@@ -70,6 +35,9 @@ type DomainsPayload struct {
 // Handles /ajax/domains
 func AjaxHandlerDomains(resp http.ResponseWriter, req *http.Request) {
 	fmt.Println("DomainsAjaxHandler")
+	if AjaxAuth(resp, req) == false {
+		return
+	}
 
 	payload := DomainsPayload{}
 	payload.Success = true

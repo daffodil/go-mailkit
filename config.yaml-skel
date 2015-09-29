@@ -1,19 +1,16 @@
 debug: true
 
-auth_secret: "My-Secret-Shared-Token-the-wombles+wibeldon+`common+are+we`.yo"
+auth_secret: "shared-secret"
 
-http_listen: "0.0.0.0:9999"
+http_listen: "0.0.0.0:9104"
+
+vacation_domain: "autoreply.example.com"
 
 db:
   engine: mysql
-  connect: "root:veg@/turnip_garden"
+  connect: "root:root@/mailserver_pfa"
   debug: true
-
-smtp_server: localhost
-smtp_login: bannana
-smtp_password: cabbage
-
-table_names:
+  table_names:
     admin: admin
     alias: alias
     alias_domain: alias_domain
@@ -27,3 +24,7 @@ table_names:
     vacation_notification: vacation_notification
     quota: quota
     quota2: quota2
+
+smtp_server: localhost
+smtp_login: albert
+smtp_password: e==mc2^^

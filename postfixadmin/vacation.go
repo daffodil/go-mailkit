@@ -48,7 +48,7 @@ type VacationPayload struct {
 func IsVacationAddress(address string) bool {
 
 	user_domain :=  strings.Split(address, "@")
-	if user_domain[1] == VacationDomain {
+	if user_domain[1] == conf.VacationDomain {
 		return true
 	}
 	return false
@@ -92,7 +92,7 @@ func AjaxHandlerVacation(resp http.ResponseWriter, req *http.Request) {
 			switch req.Method {
 
 			case "POST":
-				req.ParseForm()
+
 				f := req.Form
 				//fmt.Println(f)
 				payload.Vacation.Email = email_addr.Address
