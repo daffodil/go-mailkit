@@ -1,3 +1,11 @@
+# go-mailkit default config
+# copy this to config.yaml and modify
+#
+# Note: table_names and column_names are set here
+# Only the table_names currently works atmo
+#
+
+
 debug: true
 
 auth_secret: "shared-secret"
